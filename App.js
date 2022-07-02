@@ -6,12 +6,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import BlockRGB from "./components/BlockRGB";
 import { useState } from "react";
 
-function HomeScreen() {
+function HomeScreen({ navigation }) {
   const [colorArray, setColorArray] = useState([]);
   
   function renderItem({ item }){
     return (
+      <TouchableOpacity onPress={() => navigation.navigate("Details", item)}>
     <BlockRGB red={item.red} green={item.green} blue={item.blue} />
+    </TouchableOpacity>
     );
   }
 
@@ -38,19 +40,37 @@ function HomeScreen() {
       style={{ height: 40, justifyContent: "center" }}
       onPress={addColor}
       >
-        <Text style={{ color: "red" }}>Add Colour</Text>
+        <Text style={{ color: "red" }}>Add Color</Text>
       </TouchableOpacity>
       <TouchableOpacity
       style={{ height: 40, justifyContent: "center" }}
       onPress={resetColors}
       >
-        <Text style={{ color: "red" }}>Reset</Text>
+        <Text style={{ color: "red" }}>Reset Color</Text>
       </TouchableOpacity>
-      <FlatList style={styles.list} data={colorArray} renderItem={renderItem} />
+      <FlatList 
+      data={colorArray} 
+      renderItem={renderItem} 
+      style={{ width: "100%" }}  
+      />
     </View>
   );
   
 }
+
+function DetailsScreen({ route }){
+  const{ red, green, blue } = route.params;
+  return (
+    <View 
+    style={{ backgroundColor: `rgb(${red}, ${green}, ${blue})`, flex:1 }}
+    >
+  <Text>red: {red}</Text>
+  <Text>green: {green}</Text>
+  <Text>blue: {blue}</Text>
+  </View>
+  );
+}
+
 
 const Stack = createStackNavigator();
 
@@ -59,6 +79,7 @@ export default function App() {
    <NavigationContainer>
      <Stack.Navigator>
        <Stack.Screen name="Home" component={HomeScreen} />
+       <Stack.Screen name="Details" component={DetailsScreen} />
      </Stack.Navigator>
    </NavigationContainer>
  );
